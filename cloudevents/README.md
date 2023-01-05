@@ -2,8 +2,6 @@
 
 Known Issues:
 This is currently using a forked version of cloudevents as the `autocfg` build in `claim` does not work correctly in WASI.
-The test suite currently fails due to the following error `Fatal runtime error: assertion failed: thread_info.is_none()` 
-Currently investigating the causes of both.
 
 Welcome to your new Rust function project! The boilerplate
 [hyper-wasi](https://github.com/WasmEdge/hyper/) web server is in

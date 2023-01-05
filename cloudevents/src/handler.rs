@@ -24,17 +24,16 @@ pub async fn handle_event(event: Event) -> Result<Event, anyhow::Error> {
 mod tests {
     use super::*;
     #[tokio::test]
-    async fn post_test() -> Result<(), Box<dyn std::error::Error>> {
-        // This is currently failing with
-        // Fatal runtime error: assertion failed: thread_info.is_none()
-        // [error] execution failed: unreachable, Code: 0x89
-        // [error] In instruction: unreachable (0x00) , Bytecode offset: 0x000b8ea9
-        // [error] When executing function name: "_start"
-        let mut reqevt = Event::default();
+    async fn post_test() -> Result<(), anyhow::Error> {
+        let reqevt = Event::default();
         let respevt = handle_event(reqevt).await?;
-        let data = respevt.data().unwrap();
-        let compare = format!("{}", data);
-        assert_eq!(compare.as_str(), "{ \"name\": \"default\" }");
+        let output = match respevt.data() {
+            Some(Data::Binary(v)) => from_slice(v)?,
+            Some(Data::String(v)) => from_str(v)?,
+            Some(Data::Json(v)) => v.to_owned(),
+            None => json!({ "name": "default" }),
+        };
+        assert_eq!(output, json!({ "hello": "default" }));
         Ok(())
     }
 }
