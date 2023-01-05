@@ -1,6 +1,5 @@
-
-use log::info;
 use cloudevents::{event::Data, Event, EventBuilder, EventBuilderV10};
+use log::info;
 use serde_json::{from_slice, from_str, json};
 
 pub async fn handle_event(event: Event) -> Result<Event, anyhow::Error> {
@@ -31,7 +30,7 @@ mod tests {
         // [error] execution failed: unreachable, Code: 0x89
         // [error] In instruction: unreachable (0x00) , Bytecode offset: 0x000b8ea9
         // [error] When executing function name: "_start"
-        let mut reqevt= Event::default();
+        let mut reqevt = Event::default();
         let respevt = handle_event(reqevt).await?;
         let data = respevt.data().unwrap();
         let compare = format!("{}", data);

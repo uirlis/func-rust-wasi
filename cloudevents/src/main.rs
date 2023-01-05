@@ -1,5 +1,5 @@
-use cloudevents::binding::http::to_event;
 use cloudevents::binding::http::builder::adapter::to_response;
+use cloudevents::binding::http::to_event;
 
 use hyper::service::{make_service_fn, service_fn};
 use hyper::Server;
