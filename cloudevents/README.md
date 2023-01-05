@@ -1,36 +1,26 @@
-# Rust WASI HTTP Function
+# Rust Events Function
 
-🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉
-## EXPERIMENTAL - HERE BE DRAGONS
-🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉
+Known Issues:
+This is currently using a forked version of cloudevents as the `autocfg` build in `claim` does not work correctly in WASI.
+The test suite currently fails due to the following error `Fatal runtime error: assertion failed: thread_info.is_none()` 
+Currently investigating the causes of both.
 
-## TODO LIST
-
-* [x] HTTP Handler
-
-* [ ] Build Manifest
-
-* [x] Readiness Probe
-
-* [x] Liveness Probe
-
-* [ ] func instructions
-
-A knative func template project for WASI and Cloud Events
-
-Welcome to your new Rust WASI function project! The boilerplate web server is in
-[`src/main.rs`](./src/main.rs). It's configured to invoke the `index`
-function in [`src/handler.rs`](./src/handler.rs) in response to both
-GET and POST requests. You should put your desired behavior inside
-that `index` function.
-
-In case you need to configure some resources for your function, you can do that in the [`configure` function](./src/config.rs).
+Welcome to your new Rust function project! The boilerplate
+[hyper-wasi](https://github.com/WasmEdge/hyper/) web server is in
+[`src/main.rs`](./src/main.rs). It's configured to invoke the `handle_event`
+function in [`src/handler.rs`](./src/handler.rs) in response to a POST
+request containing a valid `CloudEvent`. You should put your desired
+behavior inside that `handle` function.
 
 The app will expose three endpoints:
 
-  * `/` Triggers the `index` function, for either GET or POST methods
-  * `/health/readiness` The endpoint for a readiness health check **Not Available**
-  * `/health/liveness` The endpoint for a liveness health check **Not Available**
+  * `/` Triggers the `handle` function for a POST method
+  * `/health/readiness` The endpoint for a readiness health check
+  * `/health/liveness` The endpoint for a liveness health check
+
+You may use any of the available [hyper
+features](https://hyper.rs/guides/0.14/) to fulfill the requests at those
+endpoints.
 
 ## Development
 
@@ -41,6 +31,7 @@ To get started you will need the following
 2. Install `cargo wasi` with `cargo install cargo-wasi`
 
 3. Set `CARGO_TARGET_WASM32_WASI_RUNNER=wasmedge` in your `.profile`.
+   Or run `export CARGO_TARGET_WASM32_WASI_RUNNER=wasmedge` in the current console.
 
 
 Once the setup is complete you should be able to run the following commands successfully
@@ -62,21 +53,18 @@ the health checks are at <http://localhost:8080/health/readiness> and
 a utility such as `curl` may be used:
 
 ```console
-curl -d '{"hello": "world"}' \
+curl -v -d '{"name": "Bootsy"}' \
   -H'content-type: application/json' \
+  -H'ce-specversion: 1.0' \
+  -H'ce-id: 1' \
+  -H'ce-source: http://cloudevents.io' \
+  -H'ce-type: dev.knative.example' \
   http://localhost:8080
 ```
 
 ## Deployment
 
-⚠️ Not yet implemented ⚠️
-
-Should follow the standard func pattern
-
-```shell script
-func deploy --registry=docker.io/<YOUR_ACCOUNT>
-```
-
+### TBD
 <!--
 Use `func` to containerize your application, publish it to a registry
 and deploy it as a Knative Service in your Kubernetes cluster:
@@ -92,7 +80,13 @@ The output from a successful deploy should show the URL for the
 service, which you can also get via `func info`, e.g.
 
 ```console
-curl $(func info -o url)
+curl -v -d '{"name": "Bootsy"}' \
+  -H'content-type: application/json' \
+  -H'ce-specversion: 1.0' \
+  -H'ce-id: 1' \
+  -H'ce-source: http://cloudevents.io' \
+  -H'ce-type: dev.knative.example' \
+  $(func info -o url)
 ```
 -->
 Have fun!
