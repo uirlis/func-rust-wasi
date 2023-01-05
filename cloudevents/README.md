@@ -41,6 +41,8 @@ cargo wasi build --release # build the optimized version of your *.wasm.
 cargo wasi run # execute a binary.
 
 cargo wasi test # run your tests in wasm32-wasi.
+or
+cargo test --target wasm32-wasi -- --nocapture # If you want more verbose output
 
 cargo wasi bench # run your benchmarks in wasm32-wasi.
 ```
