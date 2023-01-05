@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0"
-cloudevents-sdk = { git = "https://github.com/No9/sdk-rust", rev = "101bc08", features = ["http-binding", "hyper_wasi"] }
+cloudevents-sdk = { git = "https://github.com/No9/sdk-rust", rev = "5a3697c", features = ["http-binding", "hyper_wasi", "hyper" ] } 
 hyper_wasi = { version = "0.15", features = ["full"] }
 log = "0.4.17"
 tokio_wasi = { version = "1", features = ["io-util", "fs", "net", "time", "rt", "macros"] }
